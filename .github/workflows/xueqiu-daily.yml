@@ -1,1 +1,48 @@
+name: Xueqiu Daily Crawl
 
+on:
+  workflow_dispatch:
+
+  schedule:
+    # 09:00 Beijing time = 01:00 UTC
+    - cron: "0 1 * * *"
+
+    # 14:00 Beijing time = 06:00 UTC
+    - cron: "0 6 * * *"
+
+    # 20:00 Beijing time = 12:00 UTC
+    - cron: "0 12 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install playwright
+          npx playwright install --with-deps chromium
+
+      - name: Run Xueqiu crawler
+        run: node scripts/crawl_xueqiu.js
+
+      - name: Commit scraped data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/xueqiu/
+          git diff --cached --quiet || git commit -m "chore: daily xueqiu crawl"
+          git push
