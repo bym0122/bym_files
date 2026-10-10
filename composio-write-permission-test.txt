@@ -1,0 +1,3 @@
+Composio GitHub write-permission test
+
+Created on 2026-10-10 to verify that the connected GitHub account can create and commit files.
