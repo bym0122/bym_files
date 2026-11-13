@@ -1,0 +1,2 @@
+Muse GitHub MCP write test.
+Created 2026-11-14 to verify write and push permissions.
